@@ -4,6 +4,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const env = require("./config/env");
+const connectDb = require("./config/db");
 const routes = require("./routes");
 const { notFound, errorHandler } = require("./middleware/error");
 
@@ -25,6 +26,15 @@ app.use(
   "/api",
   rateLimit({ windowMs: 60 * 1000, max: 120, standardHeaders: true, legacyHeaders: false })
 );
+
+app.use("/api", async (req, res, next) => {
+  try {
+    await connectDb();
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 
 app.use("/api", routes);
 
