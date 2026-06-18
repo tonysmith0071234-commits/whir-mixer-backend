@@ -22,6 +22,10 @@ if (env.nodeEnv !== "test") {
   app.use(morgan(env.nodeEnv === "production" ? "combined" : "dev"));
 }
 
+app.get("/", (req, res) => {
+  res.json({ name: "Veilo backend", status: "ok", health: "/api/health" });
+});
+
 app.use(
   "/api",
   rateLimit({ windowMs: 60 * 1000, max: 120, standardHeaders: true, legacyHeaders: false })
